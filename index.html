@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <style></style>
+  </head>
+  <body>
+    <div class="search">
+      <input
+        type="text"
+        placeholder="Enter movie name"
+        id="query"
+        oninput="debouce(main, 2000)"
+      />
+    </div>
+
+      <div id="movies"></div>
+  </body>
+
+
+  <script>
+    //add input value
+
+    let movie = document.getElementById("movies");
+    let id;
+
+    async function main() {
+      let query = document.getElementById("query").value;
+      let res = await fetch(
+        `http://www.omdbapi.com/?apikey=b45a8f04&s=${query}`
+      );
+
+      let data = await res.json();
+      let actual_data = data.Search;
+
+      if (actual_data != undefined) {
+        //   console.log(actual_data);
+        display(actual_data);
+      }
+    }
+
+    function display(arr) {
+      arr.forEach(function (el) {
+        let moviediv = document.createElement("div")
+        moviediv.setAttribute("class", "moviediv")
+       
+        let h2 = document.createElement("h2");
+        h2.innerText = el.Title;
+
+        let img = document.createElement("img");
+        img.src = el.Poster;
+        moviediv.append( img,h2);
+        movie.append(moviediv)
+      });
+    }
+
+    //debounce
+
+    function debouce(fun, delay) {
+      if (id) {
+        clearInterval(id);
+      }
+
+      id = setTimeout(fun, delay);
+    }
+  </script>
+</html>
